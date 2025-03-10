@@ -32,6 +32,7 @@ public class App {
     static Random aleatorio = new Random(42);
     static long operacoes;
     static double nanoToMilli = 1.0/1_000_000;
+    static double duracao;
 
     /**
      * Código de teste 1. Este método...
@@ -40,7 +41,9 @@ public class App {
      */
     static int codigo1(int[] vetor) {
         int resposta = 0;
+        operacoes = 0;
         for (int i = 0; i < vetor.length; i += 2) {
+            operacoes += 4;
             resposta += vetor[i]%2;
         }
         return resposta;
@@ -53,12 +56,14 @@ public class App {
      */
     static int codigo2(int[] vetor) {
         int contador = 0;
+        operacoes = 0;
         for (int k = (vetor.length - 1); k > 0; k /= 2) {
             for (int i = 0; i <= k; i++) {
                 contador++;
             }
 
         }
+        operacoes = contador;
         return contador;
     }
 
@@ -67,9 +72,11 @@ public class App {
      * @param vetor Vetor com dados para teste.
      */
     static void codigo3(int[] vetor) {
+        operacoes = 0;
         for (int i = 0; i < vetor.length - 1; i++) {
             int menor = i;
             for (int j = i + 1; j < vetor.length; j++) {
+                operacoes++;
                 if (vetor[j] < vetor[menor])
                     menor = j;
             }
@@ -85,10 +92,14 @@ public class App {
      * @return Um inteiro que significa...
      */
     static int codigo4(int n) {
-        if (n <= 2)
+        if (n <= 2){
+            operacoes++;
             return 1;
-        else
+        }
+        else{
+            operacoes += 2;
             return codigo4(n - 1) + codigo4(n - 2);
+        }
     }
 
     /**
@@ -104,7 +115,34 @@ public class App {
         return vetor;
         
     }
-    public static void main(String[] args) {
-        
+
+    public static String teste4(int posicao){
+        long incio = System.nanoTime();
+        codigo4(posicao);
+        duracao = ((System.nanoTime() - incio) * nanoToMilli);
+        return String.format("Tamanho: %,2d | Operações: %,2d | Tempo: %,2f ms", posicao, operacoes, duracao);
+    }
+
+    public static void marcarTempo(int[] vetor){
+        long incio = System.nanoTime();
+        codigo2(vetor);
+        duracao = ((System.nanoTime() - incio) * nanoToMilli);
+    }
+
+    public static String executarTeste(int[] vetor){
+        marcarTempo(vetor);
+        return String.format("Tamanho: %,2d | Operações: %,2d | Tempo: %,2f ms", vetor.length, operacoes, duracao);
+    }
+
+      public static void main(String[] args) {
+        int[] tamanhosTeste = tamanhosTestePequeno;
+//        for(int i = 0; i < tamanhosTeste.length; i++) {
+//            int[] vetorDados = gerarVetor(tamanhosTeste[i]);
+//            System.out.println(executarTeste(vetorDados));
+//        }
+
+        for(int i = 0; i < tamanhosTeste.length; i++){
+            System.out.println(teste4(tamanhosTeste[i]));
+        }
     }
 }
