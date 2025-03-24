@@ -2,7 +2,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
-public class Bubblesort<T extends Comparable<T>> implements IOrdenador<T> {
+public class Insercao<T extends Comparable<T>> implements IOrdenador<T> {
 
     private long comparacoes;
     private long movimentacoes;
@@ -16,23 +16,27 @@ public class Bubblesort<T extends Comparable<T>> implements IOrdenador<T> {
         int tamanho = copiaDados.length;
         inicio = LocalDateTime.now();
 
-        for (int posicaoRef = tamanho - 1; posicaoRef > 0; posicaoRef--) {
-            for (int posicao = 0; posicao < posicaoRef; posicao++) {
+        for (int posicaoRef = 1; posicaoRef <= tamanho - 1; posicaoRef++) {
+            T valor = copiaDados[posicaoRef];
+            int j = posicaoRef - 1;
+            comparacoes++;
+            while (j >= 0 && valor.compareTo(copiaDados[j]) < 0) {
+                j--;
                 comparacoes++;
-                if (copiaDados[posicao].compareTo(copiaDados[posicao + 1]) > 0) {
-                    trocar(posicao, posicao + 1, copiaDados);
-                }
             }
+            copiaDados(j + 1, posicaoRef, copiaDados);
+            copiaDados[j + 1] = valor;
         }
+
         fim = LocalDateTime.now();
         return copiaDados;
     }
 
-    private void trocar(int p1, int p2, T[] dados) {
-        movimentacoes += 3;
-        T temp = dados[p1];
-        dados[p1] = dados[p2];
-        dados[p2] = temp;
+    private void copiaDados(int inicio, int fim, T[] vetor) {
+        for (int i = fim; i > inicio; i--) {
+            movimentacoes++;
+            vetor[i] = vetor[i - 1];
+        }
     }
 
     @Override
